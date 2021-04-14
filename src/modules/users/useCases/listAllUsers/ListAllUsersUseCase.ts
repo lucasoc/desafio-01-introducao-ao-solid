@@ -1,3 +1,5 @@
+import { response } from "express";
+
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -9,7 +11,15 @@ class ListAllUsersUseCase {
   constructor(private usersRepository: IUsersRepository) {}
 
   execute({ user_id }: IRequest): User[] {
-    // Complete aqui
+    const userIsAdmin = this.usersRepository.findById(user_id);
+
+    if (userIsAdmin.admin === false) {
+      throw new Error("User is not an admin");
+    }
+
+    const userList = this.usersRepository.list();
+
+    return userList;
   }
 }
 
